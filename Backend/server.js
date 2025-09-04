@@ -5,10 +5,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// In-memory storage (will reset when server restarts)
 const urls = {};
 
-// Create short URL
 app.post('/shorturls', (req, res) => {
     const { url, validity = 30, shortcode } = req.body;
 
@@ -17,7 +15,7 @@ app.post('/shorturls', (req, res) => {
     }
 
     const code = shortcode || Math.random().toString(36).substring(2, 8);
-    const expiry = new Date(Date.now() + validity * 60000); // validity in minutes
+    const expiry = new Date(Date.now() + validity * 60000); 
 
     urls[code] = {
         url,
@@ -33,7 +31,6 @@ app.post('/shorturls', (req, res) => {
     });
 });
 
-// Redirect short URL -> original
 app.get('/:code', (req, res) => {
     const { code } = req.params;
     const entry = urls[code];
@@ -56,7 +53,6 @@ app.get('/:code', (req, res) => {
     res.redirect(entry.url);
 });
 
-// Get stats about a short URL
 app.get('/shorturls/:code', (req, res) => {
     const { code } = req.params;
     const entry = urls[code];
@@ -76,3 +72,4 @@ app.get('/shorturls/:code', (req, res) => {
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
